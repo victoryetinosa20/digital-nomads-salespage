@@ -141,7 +141,33 @@ src="https://www.facebook.com/tr?id=1259840568928413&ev=PageView&noscript=1"
     }
 }
 
-    
+    .sticky-cta {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #ff6b35;
+      color: white;
+      text-align: center;
+      padding: 18px 20px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      z-index: 9999;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+      transform: translateY(100%);         /* hidden below screen by default */
+      transition: transform 0.4s ease;
+      border: none;
+      width: 100%;
+    }
+
+    .sticky-cta.visible {
+      transform: translateY(0);            /* slides up into view */
+    }
+
+    .sticky-cta.hidden {
+      display: none;                       /* permanently gone after click */
+    }
         
     </style>
 </head>
@@ -233,7 +259,7 @@ src="https://www.facebook.com/tr?id=1259840568928413&ev=PageView&noscript=1"
 </section>
 
 
-<section class="py-6 bg-gray-900 text-white">
+<section class="py-6 bg-gray-900 text-white" id="trigger-section">
   <div class="container mx-auto px-4">
     <div class="text-center mb-12">
       <p class="text-gray-400 mb-4">Trusted by the Great Majority of freelancers across Nigeria </p>
@@ -282,6 +308,43 @@ src="https://www.facebook.com/tr?id=1259840568928413&ev=PageView&noscript=1"
     </div>
   </div>
 </section>
+
+ <button class="sticky-cta" id="sticky-cta">
+    🚀 Get Instant Access — Only $97 Today!
+  </button>
+
+  <script>
+    const cta           = document.getElementById('sticky-cta');
+    const triggerSection = document.getElementById('trigger-section');
+
+    // Show CTA when user scrolls PAST the trigger section
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting && !cta.classList.contains('hidden')) {
+          // Section has left the viewport (scrolled past it)
+          const rect = triggerSection.getBoundingClientRect();
+          if (rect.bottom < 0) {
+            cta.classList.add('visible');   // show the CTA
+          } else {
+            cta.classList.remove('visible'); // hide if scrolled back up
+          }
+        } else {
+          cta.classList.remove('visible');   // hide while section is visible
+        }
+      });
+    }, { threshold: 0 });
+
+    observer.observe(triggerSection);
+
+    // Dismiss CTA permanently on click
+    cta.addEventListener('click', () => {
+      cta.classList.add('hidden');          // hide it forever
+      observer.disconnect();               // stop watching scroll
+      // 👇 Add your redirect or action here:
+      // window.location.href = '#get-started';
+    });
+  </script>
+   
 
 <section class="py-16 bg-gray-800 text-white">
   <div class="container mx-auto px-4 max-w-4xl">
@@ -1775,6 +1838,7 @@ function showCopySuccess() {
 </body>
 
 </html>
+
 
 
 
